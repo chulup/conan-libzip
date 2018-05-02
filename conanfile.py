@@ -20,10 +20,11 @@ class LibZipConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
+        "fPIC": [True, False],
         "with_bzip2": [True, False],
         "with_openssl": [True, False]
     }
-    default_options = "shared=False", "with_bzip2=True", "with_openssl=True"
+    default_options = "shared=False", "fPIC=True", "with_bzip2=True", "with_openssl=True"
     requires = "zlib/1.2.11@conan/stable"
 
     def source(self):
@@ -32,24 +33,30 @@ class LibZipConan(ConanFile):
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, self.source_subfolder)
 
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
     def requirements(self):
         if self.options.with_bzip2:
             self.requires.add("bzip2/1.0.6@conan/stable")
 
         if self.options.with_openssl:
-            self.requires("OpenSSL/[>=1.0]@conan/stable")
+            self.requires.add("OpenSSL/[>=1.0]@conan/stable")
 
     def configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_OPENSSL"] = self.options.with_openssl
-        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
         cmake.configure()
         return cmake
 
     def exclude_targets(self):
+        cmake_file = os.path.join(self.source_subfolder, "CMakeLists.txt")
         excluded_targets = ["regress", "examples", "man"]
         for target in excluded_targets:
-            tools.replace_in_file(os.path.join(self.source_subfolder, "CMakeLists.txt"), "ADD_SUBDIRECTORY(%s)" % target, "")
+            tools.replace_in_file(cmake_file, "ADD_SUBDIRECTORY(%s)" % target, "")
+        if self.options.with_openssl:
+            tools.replace_in_file(cmake_file, "OPENSSL_LIBRARIES", "CONAN_LIBS_OPENSSL")
 
     def build(self):
         self.exclude_targets()
