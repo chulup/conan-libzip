@@ -40,7 +40,7 @@ class LibZipConan(ConanFile):
             self.requires.add("bzip2/1.0.6@conan/stable")
 
         if self.options.with_openssl:
-            self.requires.add("OpenSSL/[>=1.0]@conan/stable")
+            self.requires.add("OpenSSL/1.0.2o@conan/stable")
 
     def source(self):
         source_url = "https://libzip.org/download"
