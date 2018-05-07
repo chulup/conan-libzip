@@ -11,6 +11,7 @@ class LibZipConan(ConanFile):
     version = "1.5.1"
     url = "https://github.com/bincrafters/conan-libzip"
     homepage = "https://github.com/nih-at/libzip"
+    author = "Bincrafters <bincrafters@gmail.com>"
     license = "BSD"
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
@@ -27,15 +28,12 @@ class LibZipConan(ConanFile):
     default_options = "shared=False", "fPIC=True", "with_bzip2=True", "with_openssl=True"
     requires = "zlib/1.2.11@conan/stable"
 
-    def source(self):
-        source_url = "https://libzip.org/download"
-        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version))
-        extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, self.source_subfolder)
-
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+
+    def configure(self):
+        del self.settings.compiler.libcxx
 
     def requirements(self):
         if self.options.with_bzip2:
@@ -43,6 +41,12 @@ class LibZipConan(ConanFile):
 
         if self.options.with_openssl:
             self.requires.add("OpenSSL/[>=1.0]@conan/stable")
+
+    def source(self):
+        source_url = "https://libzip.org/download"
+        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version))
+        extracted_dir = self.name + "-" + self.version
+        os.rename(extracted_dir, self.source_subfolder)
 
     def configure_cmake(self):
         cmake = CMake(self)
