@@ -8,7 +8,7 @@ import os
 class LibZipConan(ConanFile):
     name = "libzip"
     description = "A C library for reading, creating, and modifying zip archives"
-    version = "1.5.1"
+    version = "2008.11.18"
     url = "https://github.com/bincrafters/conan-libzip"
     homepage = "https://github.com/nih-at/libzip"
     author = "Bincrafters <bincrafters@gmail.com>"
