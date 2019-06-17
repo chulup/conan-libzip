@@ -53,6 +53,7 @@ class LibZipConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_OPENSSL"] = self.options.with_openssl
+        cmake.definitions["ENABLE_GNUTLS"] = False # TODO (uilian): We need GnuTLS package
         cmake.configure()
         return cmake
 
