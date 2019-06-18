@@ -15,7 +15,7 @@ class LibZipConan(ConanFile):
     license = "BSD-3-Clause"
     topics = ("conan", "zip", "libzip", "zip-archives", "zip-editing")
     exports = ["LICENSE.md"]
-    exports_sources = ["CMakeLists.txt"]
+    exports_sources = ["CMakeLists.txt", "0001-void-pointer.patch"]
     generators = "cmake"
     _source_subfolder = "source_subfolder"
     _build_subfolder = "build_subfolder"
@@ -68,6 +68,7 @@ class LibZipConan(ConanFile):
         tools.replace_in_file(cmake_file, "MESSAGE(FATAL_ERROR", "MESSAGE(STATUS")
 
     def build(self):
+        tools.patch(base_path=self._source_subfolder, patch_file="0001-void-pointer.patch")
         self.exclude_targets()
         cmake = self._configure_cmake()
         cmake.build()
