@@ -4,7 +4,7 @@
 |:--------:|:---------:|:-----------------:|
 |[![Download](https://api.bintray.com/packages/bincrafters/public-conan/libzip%3Abincrafters/images/download.svg)](https://bintray.com/bincrafters/public-conan/libzip%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-libzip?svg=true)](https://ci.appveyor.com/project/BinCrafters/conan-libzip)|[![Build Status](https://travis-ci.com/bincrafters/conan-libzip.svg)](https://travis-ci.com/bincrafters/conan-libzip)|
 
-## Conan.io Information
+## Conan Information
 
 Bincrafters packages can be found in the following public Conan repository:
 
