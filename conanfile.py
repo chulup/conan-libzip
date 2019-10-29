@@ -21,14 +21,17 @@ class LibZipConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "with_bzip2": [True, False],
-        "with_openssl": [True, False]
+        "with_openssl": [True, False],
+        "enable_windows_crypto": [True, False],
     }
-    default_options = {'shared': False, 'fPIC': True, 'with_bzip2': True, 'with_openssl': True}
+    default_options = {'shared': False, 'fPIC': True, 'with_bzip2': True, 'with_openssl': True, 'enable_windows_crypto': True}
     requires = "zlib/1.2.11"
 
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+        else:
+            del self.options.enable_windows_crypto
 
     def configure(self):
         del self.settings.compiler.libcxx
@@ -52,6 +55,8 @@ class LibZipConan(ConanFile):
         cmake = CMake(self)
         cmake.definitions["ENABLE_OPENSSL"] = self.options.with_openssl
         cmake.definitions["ENABLE_GNUTLS"] = False # TODO (uilian): We need GnuTLS package
+        if self.settings.os == "Windows":
+            cmake.definitions["ENABLE_WINDOWS_CRYPTO"] = self.options.enable_windows_crypto
         cmake.configure()
         return cmake
 
@@ -78,3 +83,6 @@ class LibZipConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+        if self.settings.os == "Windows":
+            if self.options.enable_windows_crypto:
+                self.cpp_info.libs.append("bcrypt")
