@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from conans import ConanFile, CMake, tools
 import os
 
@@ -27,7 +24,7 @@ class LibZipConan(ConanFile):
         "with_openssl": [True, False]
     }
     default_options = {'shared': False, 'fPIC': True, 'with_bzip2': True, 'with_openssl': True}
-    requires = "zlib/1.2.11@conan/stable"
+    requires = "zlib/1.2.11"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -35,13 +32,14 @@ class LibZipConan(ConanFile):
 
     def configure(self):
         del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
 
     def requirements(self):
         if self.options.with_bzip2:
-            self.requires.add("bzip2/1.0.8@conan/stable")
+            self.requires.add("bzip2/1.0.8")
 
         if self.options.with_openssl:
-            self.requires.add("OpenSSL/1.0.2s@conan/stable")
+            self.requires.add("openssl/1.0.2t")
 
     def source(self):
         sha256 = "be694a4abb2ffe5ec02074146757c8b56084dbcebf329123c84b205417435e15"
