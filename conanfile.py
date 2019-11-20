@@ -8,7 +8,6 @@ class LibZipConan(ConanFile):
     version = "1.5.2"
     url = "https://github.com/bincrafters/conan-libzip"
     homepage = "https://github.com/nih-at/libzip"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = "BSD-3-Clause"
     topics = ("conan", "zip", "libzip", "zip-archives", "zip-editing")
     exports = ["LICENSE.md"]
