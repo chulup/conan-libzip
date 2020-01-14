@@ -5,13 +5,13 @@ import os
 class LibZipConan(ConanFile):
     name = "libzip"
     description = "A C library for reading, creating, and modifying zip archives"
-    version = "1.5.2"
+    version = "1.5.2.2"
     url = "https://github.com/bincrafters/conan-libzip"
     homepage = "https://github.com/nih-at/libzip"
     license = "BSD-3-Clause"
     topics = ("conan", "zip", "libzip", "zip-archives", "zip-editing")
     exports = ["LICENSE.md"]
-    exports_sources = ["CMakeLists.txt", "0001-void-pointer.patch"]
+    exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
     _source_subfolder = "source_subfolder"
     _build_subfolder = "build_subfolder"
@@ -44,10 +44,11 @@ class LibZipConan(ConanFile):
             self.requires.add("openssl/1.0.2t")
 
     def source(self):
-        sha256 = "be694a4abb2ffe5ec02074146757c8b56084dbcebf329123c84b205417435e15"
-        source_url = "https://libzip.org/download"
-        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version), sha256=sha256)
-        extracted_dir = self.name + "-" + self.version
+        sha256 = "2de341dee3375ba8c1bb1597a4265503ec927c228e813f7d2ccef4a820d45f73"
+        commit_hash = "fd51601bc5667615f5f0fadd82b7b9ad1ffab520"
+        source_url = "https://github.com/nih-at/libzip/archive/{}.zip".format(commit_hash)
+        tools.get(source_url, sha256=sha256)
+        extracted_dir = self.name + "-" + commit_hash
         os.rename(extracted_dir, self._source_subfolder)
 
     def _configure_cmake(self):
@@ -66,11 +67,8 @@ class LibZipConan(ConanFile):
             tools.replace_in_file(cmake_file, "ADD_SUBDIRECTORY(%s)" % target, "")
         if self.options.with_openssl:
             tools.replace_in_file(cmake_file, "OPENSSL_LIBRARIES", "CONAN_LIBS_OPENSSL")
-        # FindZLIB.cmake provided on the package doesn't provide ZLIB_VERSION_STRING
-        tools.replace_in_file(cmake_file, "MESSAGE(FATAL_ERROR", "MESSAGE(STATUS")
 
     def build(self):
-        tools.patch(base_path=self._source_subfolder, patch_file="0001-void-pointer.patch")
         self.exclude_targets()
         cmake = self._configure_cmake()
         cmake.build()
